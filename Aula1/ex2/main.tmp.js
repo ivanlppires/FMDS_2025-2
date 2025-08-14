@@ -57,8 +57,6 @@ const [primeiroNum, ...resto] = [10, 20, 30, 40];
 console.log(primeiroNum); // Saída: 10
 console.log(resto);       // Saída: [20, 30, 40]
 
-// ...existing code...
-
 // Exemplo 8: Rest em Destructuring de Objetos
 // O rest pode ser usado para coletar as propriedades restantes de um objeto.
 const usuario = { id: 1, nome: "Ana", idade: 28, cidade: "Sinop" };
