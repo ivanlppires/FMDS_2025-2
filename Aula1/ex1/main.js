@@ -15,26 +15,26 @@ const nome = 'João';
 let idade = 30;
 var cidade = 'São Paulo';
 
-//console.log(nome, idade, cidade);
+console.log(nome, idade, cidade);
 
 // Usando Literals
-//console.log(`Meu nome é ${nome}, eu tenho ${idade} anos e moro em ${cidade}.`);
+console.log(`Meu nome é ${nome}, eu tenho ${idade} anos e moro em ${cidade}.`);
 
 // --- Funções
-// function soma(a, b) { // Função 
-//     return a + b;
-// }
+function soma(a, b) { // Função 
+    return a + b;
+}
 
 // Arrow Functions
 
 //const somaArrow = (a, b) =>  { return a + b }; // 2 ou mais parâmetros
-//const somaArrow = (a, b) =>  a + b ; // 2 ou mais parâmetros
-//console.log(`Soma tradicional: ${soma(2, 3)}`);
-//console.log(`Soma com arrow function: ${somaArrow(2, 3)}`);
+const somaArrow = (a, b) =>  a + b ; // 2 ou mais parâmetros
+console.log(`Soma tradicional: ${soma(2, 3)}`);
+console.log(`Soma com arrow function: ${somaArrow(2, 3)}`);
 
-//const multiplica = x => x * 2; // 1 parâmetro
-// console.log(`Multiplicação: ${multiplica(5)}`);
+const multiplica = x => x * 2; // 1 parâmetro
+console.log(`Multiplicação: ${multiplica(5)}`);
 
-// const num1 = 10;
-// const divide = () => 10/2; // 0 parâmetros
-// console.log(`Divisão: ${divide()}`);
+const num1 = 10;
+const divide = () => 10/2; // 0 parâmetros
+console.log(`Divisão: ${divide()}`);
