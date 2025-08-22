@@ -18,7 +18,7 @@ function esperar(ms) {
     setTimeout(() => resolve(`Esperei ${ms}ms`), ms);
   });
 }
-
+/*
 esperar(1000)
   .then((mensagem) => console.log("then:", mensagem))
   .catch((erro) => console.error("catch:", erro))
@@ -29,37 +29,40 @@ esperar(500)
   .then(() => 10)
   .then((valor) => valor * 2)
   .then((resultado) => console.log("Resultado final:", resultado));
-
+*/
 // ===== 3) async/await =====
 async function exemploAsync() {
   console.log("Iniciando async/await...");
-  const a = await esperar(500);
-  const b = await esperar(800);
+  const a = await esperar(800);
+  const b = await esperar(500);
   console.log("Resultados:", a, "e", b);
 }
-exemploAsync();
+//exemploAsync();
 
 // ===== 4) Paralelo vs Sequencial =====
 async function comparar() {
   console.log("\n--- Sequencial ---");
   let inicio = Date.now();
-  const r1 = await esperar(500);
-  const r2 = await esperar(800);
+  const r1 = await esperar(2000);
+  const r2 = await esperar(100);
   console.log(r1, r2, "Tempo:", Date.now() - inicio, "ms");
 
   console.log("\n--- Paralelo ---");
   inicio = Date.now();
-  const p2 = esperar(800);
-  const p1 = esperar(500);
+  const p1 = esperar(4000);
+  const p2 = esperar(300);
   const [v1, v2] = await Promise.all([p1, p2]);
-  console.log(v1, v2, "Tempo:", Date.now() - inicio, "ms");
+  //console.log(v1, v2, "Tempo:", Date.now() - inicio, "ms");
+  console.log(v1);
+  console.log(v2);
 }
-comparar();
+//comparar();
 
 // ===== 5) fetch básico =====
 async function buscarDados() {
   try {
     const resposta = await fetch("https://jsonplaceholder.typicode.com/todos/1");
+    console.log(resposta);
     if (!resposta.ok) throw new Error("Erro na requisição");
     const dados = await resposta.json();
     console.log("Dados recebidos:", dados);
@@ -67,4 +70,14 @@ async function buscarDados() {
     console.error("Erro no fetch:", erro.message);
   }
 }
-//buscarDados();
+buscarDados();
+
+fetch("https://jsonplaceholder.typicode.com/todos/1")
+  .then((resposta) => {
+    console.log(resposta);
+    if (!resposta.ok) throw new Error("Erro na requisição");
+    return resposta.json();
+  })
+  .then((dados) => console.log("Dados recebidos:", dados))
+  .catch((erro) => console.error("Erro no fetch:", erro.message))
+  .finally(() => console.log("Fetch finalizado"));
