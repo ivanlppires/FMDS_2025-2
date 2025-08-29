@@ -6,28 +6,86 @@
                 type="text"
                 placeholder="Digite uma tarefa e pressione Enter"
                 v-model="newTask"
+                @keyup.enter="saveTask"
             />
             <!-- v-bind: ou ":" liga o script com o template sem interpolação -->
             <!-- v-on ou "@" liga o template com script -->
             <!-- v-model two-way data bind, liga o template com script e script com template -->
-            <button @click="addTask">Adicionar</button>
+            <button @click="saveTask">Salvar</button>
         </div>
         <div>
-            <p>Estou escrevendo isso aqui ó: {{  newTask }}</p>
-            <pre>{{ tasks }}</pre>
+            <ul class="list" v-if="tasks.length > 0"><!-- v-if condição -->
+                <!-- v-for percorre o elemente iterável -->
+                <li v-for="(item, i) in tasks" :key="item.id" > 
+                    <span @click="isDone(i)" 
+                    :class="['text', { done: item.done }]"> <!-- classes dinâmicas-->
+                    {{ item.done ? '✅' : '🔘' }} 
+                    {{ item.task  }}</span> 
+                    <button class="small danger" @click="removeTask(i)">🗑️</button>
+                    <button class="small danger" @click="loadTask(item)">✏️</button>
+                </li>
+            </ul>
+            <p v-else>Nenhuma tarefa adicionada</p> <!-- senão   -->
         </div>
+        <div class="summary" style="margin-top:1rem">
+            <p class="summary">
+                Totais: total {{ total }} |
+                Concluídas: {{ totalDone }} | 
+                Pendentes: {{  totalPending }}
+            </p>
+    </div>
     </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 const title = "Meu ToDo List" // variável não reativa
 const tasks = ref([]); // variável reativa
 const newTask = ref("")
-const addTask = () => {
-    console.log('Adicionando tarefa:', newTask.value)
-    tasks.value.push(newTask.value)
+let idTask = 0;
+let editIndex = -1;
+const saveTask = () => {
+    
+    if(editIndex !== -1) {
+        // Altera
+        tasks.value[editIndex].task = newTask.value
+        editIndex = -1
+    }else{
+        // Adiciona
+        const task = {
+            id: ++idTask,
+            task:newTask.value,
+            done: false
+        }
+        tasks.value.push(task)
+    }
     newTask.value = ""
+    setLocalStorage()
 }
+const removeTask = i => {
+    tasks.value.splice(i, 1)
+    setLocalStorage()
+}
+const isDone = i => tasks.value[i].done = !tasks.value[i].done
+const loadTask = item => {
+    newTask.value = item.task
+    editIndex = tasks.value.findIndex(t => t.id === item.id)
+}
+const total = computed( () => tasks.value.length);
+const totalDone = computed( () => tasks.value.filter(t => t.done).length);
+const totalPending = computed( () => tasks.value.filter(t => !t.done).length);
+const setLocalStorage = () => {
+    localStorage.setItem("tasks", JSON.stringify(tasks.value))
+}
+
+// Carregar localstorage no onmounted
+onMounted(() => {
+    const tasksFromStorage = localStorage.getItem("tasks");
+    if (tasksFromStorage) {
+        tasks.value = JSON.parse(tasksFromStorage);
+        idTask = tasks.value.length > 0 ? Math.max(...tasks.value.map(t => t.id)) : 0;
+    }
+});
+
 </script>
 
 <style>
@@ -108,6 +166,7 @@ button {
     border-radius: 6px;
     cursor: pointer;
     transition: background-color .12s ease, transform .06s ease, filter .12s ease;
+    margin-left: 5px;
 }
 
 button:hover {
@@ -124,6 +183,7 @@ button:active {
     list-style: none;
     padding: 0;
     margin: 0;
+    line-height: 40px;
 }
 
 .item {
@@ -149,7 +209,7 @@ button:active {
     color: inherit;
 }
 
-.text.done {
+.done {
     color: var(--muted);
     text-decoration: line-through;
 }
