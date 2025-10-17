@@ -1,7 +1,10 @@
 import express from 'express'
 import clientRoutes from './routes/ClientRoutes.js'
 import productRoutes from './routes/ProductRoutes.js'
+import cors from 'cors'
+
 const app = express()
+app.use(cors()) // habilita CORS para todos
 
 app.use(express.json()) // Middleware para interpretar JSON no corpo das requisições
 app.use('/clients', clientRoutes) // Usando as rotas de clientes

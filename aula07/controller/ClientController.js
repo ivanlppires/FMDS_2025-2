@@ -4,11 +4,13 @@ const mysql = db.promise();
 // Create a new client
 const createClient = async (req, res) => {
   const { name, email } = req.body;
-  const query = "INSERT INTO clientes (nome, email) VALUES (?, ?)";
+  const query = "INSERT INTO clients (name, email) VALUES (?, ?)";
 
   try {
-    const result = await mysql.query(query, [name, email]);
-    res.status(201).json({ id: result.insertId, name, email });
+    const [result] = await mysql.query(query, [name, email]);
+    const clientId = result.insertId;
+    console.log('NOVO ID:', clientId);
+    res.status(201).json({ id: clientId, name, email });
   } catch (error) {
     res.status(500).json({ error: "Error creating client" });
   }
@@ -16,7 +18,7 @@ const createClient = async (req, res) => {
 
 // Read all clients
 const getClients = async (req, res) => {
-  const query = "SELECT * FROM clientes";
+  const query = "SELECT * FROM clients";
 
   try {
     const clients = await mysql.query(query);
@@ -30,12 +32,12 @@ const getClients = async (req, res) => {
 // Get a client by ID
 const getClientById = async (req, res) => {
   const { id } = req.params;
-  const query = "SELECT * FROM clientes WHERE id = ?";
+  const query = "SELECT * FROM clients WHERE id = ?";
 
   try {
-    const client = await mysql.query(query, [id]);
-    if (client) {
-      res.status(200).json(client[0]);
+    const [rows] = await mysql.query(query, [id]);
+    if (rows.length > 0) {
+      res.status(200).json(rows[0]);
     } else {
       res.status(404).json({ error: "Client not found" });
     }
@@ -48,7 +50,7 @@ const getClientById = async (req, res) => {
 const updateClient = async (req, res) => {
   const { id } = req.params;
   const { name, email } = req.body;
-  const query = "UPDATE clientes SET nome = ?, email = ? WHERE id = ?";
+  const query = "UPDATE clients SET name = ?, email = ? WHERE id = ?";
 
   try {
     await mysql.query(query, [name, email, id]);
@@ -61,7 +63,7 @@ const updateClient = async (req, res) => {
 // Delete a client
 const deleteClient = async (req, res) => {
   const { id } = req.params;
-  const query = "DELETE FROM clientes WHERE id = ?";
+  const query = "DELETE FROM clients WHERE id = ?";
 
   try {
     await mysql.query(query, [id]);
